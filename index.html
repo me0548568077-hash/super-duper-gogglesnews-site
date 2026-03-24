@@ -3,92 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLATINUM AI TURBO 💎</title>
+    <title>PLATINUM OMEGA AI - הפיצוי המוחלט 💎</title>
     <style>
-        :root { --neon: #00ffcc; --bg: #050a0f; --panel: #111b21; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { background: #075e54; padding: 15px; text-align: center; font-size: 1.4rem; font-weight: bold; border-bottom: 3px solid var(--neon); box-shadow: 0 0 15px var(--neon); }
+        :root { --main: #00ffcc; --bg: #050a0f; --panel: rgba(10, 25, 41, 0.95); --gold: #ffd700; --red: #ff4444; }
+        * { box-sizing: border-box; transition: 0.3s; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: white; font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; }
         
-        #chat-window { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, #0a1929 0%, #050a0f 100%); }
-        
-        .msg { max-width: 85%; padding: 12px 18px; border-radius: 15px; line-height: 1.5; font-size: 1rem; position: relative; animation: slideUp 0.3s ease; }
-        .user { align-self: flex-start; background: #1e293b; border-right: 4px solid var(--neon); }
-        .ai { align-self: flex-end; background: #202c33; border-left: 4px solid #ffd700; color: #e9edef; white-space: pre-wrap; }
-        
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* רקע מטריקס אומגה דינמי */
+        #matrix-bg { position: fixed; top: 0; left: 0; z-index: -1; filter: blur(1px); opacity: 0.3; }
 
-        .input-box { padding: 20px; background: var(--panel); display: flex; gap: 10px; border-top: 1px solid #333; }
-        input { flex-grow: 1; background: #000; border: 1px solid var(--neon); color: white; padding: 12px; border-radius: 25px; outline: none; font-size: 1rem; }
-        button { background: var(--neon); border: none; color: black; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:active { transform: scale(0.9); }
-        
-        .loading { font-size: 0.8rem; color: var(--neon); margin: 5px 20px; display: none; }
+        /* מבנה האתר - גריד מתקדם */
+        .wrapper { display: grid; grid-template-columns: 350px 1fr; grid-template-rows: 80px 1fr 60px; height: 100vh; gap: 15px; padding: 15px; }
+
+        /* כותרת מטורפת עם אפקטים */
+        header { grid-column: span 2; background: var(--panel); border: 2px solid var(--main); border-radius: 15px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; box-shadow: 0 0 30px rgba(0,255,204,0.4); z-index: 100; }
+        .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; color: var(--main); text-shadow: 0 0 15px var(--main); animation: glow 2s infinite alternate; }
+        @keyframes glow { from { opacity: 0.7; } to { opacity: 1; text-shadow: 0 0 25px var(--main); } }
+        #system-status { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #64748b; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: gray; box-shadow: 0 0 10px white; }
+
+        /* לוח בקרה צדי - צד ימין */
+        .sidebar { background: var(--panel); border: 1px solid #1e293b; border-radius: 15px; display: flex; flex-direction: column; padding: 20px; border-left: 5px solid var(--main); z-index: 50; }
+        .feature-title { font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 20px; color: var(--main); text-align: center; }
+        .feature-item { font-size: 1rem; color: #e2e8f0; cursor: pointer; padding: 10px; border-radius: 8px; }
+        .feature-item:hover { background: rgba(0,255,204,0.1); color: var(--main); transform: scale(1.05); }
+
+        /* מרכז - צ'אט AI אמיתי (VIP) */
+        main { background: var(--panel); border: 1px solid #1e293b; border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; position: relative; z-index: 50; }
+        #chat-window { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, #0a1929 0%, #050a0f 100%); }
+        .msg { padding: 15px 20px; border-radius: 15px; line-height: 1.6; font-size: 1.1rem; max-width: 80%; animation: slideUp 0.3s ease; position: relative; }
+        .msg.user { align-self: flex-start; background: #1e293b; border-right: 4px solid var(--gold); }
+        .msg.ai { align-self: flex-end; background: #202c33; border-left: 4px solid var(--main); color: #e9edef; white-space: pre-wrap; }
+        .msg-meta { font-size: 0.7rem; color: #64748b; margin-top: 5px; text-align: left; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } }
+
+        /* איזור קלט מתקדם */
+        .input-area { padding: 20px; background: rgba(17, 27, 33, 0.95); display: flex; gap: 15px; border-top: 1px solid #333; z-index: 100; }
+        input { flex-grow: 1; background: #000; border: 1px solid var(--main); color: white; padding: 15px; border-radius: 25px; outline: none; font-size: 1.1rem; box-shadow: inset 0 0 10px rgba(0,255,204,0.2); }
+        input:focus { box-shadow: 0 0 15px var(--main), inset 0 0 10px rgba(0,255,204,0.3); }
+        .btn-send { background: var(--main); border: none; color: black; padding: 10px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .btn-send:active { transform: scale(0.9); }
+        .btn-special { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 1.1rem; }
+        .btn-special:hover { background: var(--gold); color: black; }
+
+        /* סטטוס טעינה */
+        #status-display { color: var(--main); font-size: 0.8rem; padding: 5px 20px; display: none; }
+
+        /* תפריט תחתון */
+        footer { grid-column: span 2; background: var(--panel); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; letter-spacing: 1px; color: #64748b; border: 1px solid #1e293b; z-index: 100; }
+
+        @media (max-width: 800px) {
+            .wrapper { grid-template-columns: 1fr; grid-template-rows: 70px 300px 1fr 40px; }
+            .sidebar { grid-row: 3; }
+        }
     </style>
 </head>
 <body>
 
-<header>PLATINUM AI - מנוע בינה אמיתי 🧠</header>
+<canvas id="matrix-bg"></canvas>
 
-<div id="chat-window">
-    <div class="msg ai">שלום פלטינום. המערכת מחוברת כעת לליבת ה-AI. שאל אותי כל דבר, אני אענה לך בזמן אמת.</div>
+<div class="wrapper">
+    <header>
+        <div class="logo">PLATINUM OMEGA</div>
+        <div id="system-status"><div class="status-dot"></div>ליבת ה-AI: מוכנה</div>
+    </header>
+
+    <aside class="sidebar">
+        <div class="feature-title">💎 10 פיצ'רים של בינה</div>
+        <div class="feature-item" onclick="setSpecial('עמוק')">🔍 ניתוח עמוק (Deep Analysis)</div>
+        <div class="feature-item" onclick="setSpecial('תמונה')">🎨 תמונה ויזואלית (Image Sim)</div>
+        <div class="feature-item" onclick="setSpecial('קוד')">💻 מחולל קוד (Code Gen)</div>
+        <div class="feature-item" onclick="setSpecial('תרגום')">🌐 תרגום סימולטני (Translate)</div>
+        <div class="feature-item" onclick="setSpecial('סיכום')">📝 סיכום חכם (Summarize)</div>
+        <div class="feature-item" onclick="setSpecial('רגש')">❤️ ניתוח רגשות (Sentiment)</div>
+        <div class="feature-item" onclick="setSpecial('עצות')">💡 מחולל עצות (Advice Gen)</div>
+        <div class="feature-item" onclick="setSpecial('תמלול')">🎤 תמלול קולי (Voice to Text)</div>
+        <div class="feature-item" onclick="setSpecial('רעיונות')">🧠 רעיונות מטורפים (Idea Bot)</div>
+        <div class="feature-item" onclick="setSpecial('אישי')">👤 עוזר אישי (Personal AI)</div>
+    </aside>
+
+    <main>
+        <div id="chat-window">
+            <div class="msg ai">ברוך הבא לפלטינום אומגה. אני מחובר למוח הרשמי של Gemini עכשיו. אני לא משתמש בתשובות מוכנות מראש. שאל אותי כל דבר!</div>
+        </div>
+        <div id="status-display">Gemini מעבד בקשה עמוקה...</div>
+        <div class="input-area">
+            <button class="btn-special" id="special-btn" onclick="clearSpecial()">מצב: חופשי</button>
+            <input type="text" id="user-input" placeholder="כתוב שאלה חכמה..." onkeypress="if(event.key=='Enter') talk()">
+            <button class="btn-send" onclick="talk()">שלח</button>
+        </div>
+    </main>
+
+    <footer>גירסת פיצוי אולטימטיבית | נבנה עבור פלטינום | 2026-INFINITE</footer>
 </div>
 
-<div id="status" class="loading">הבינה המלאכותית מנתחת ומשיבה...</div>
+<script type="importmap">
+  { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
+</script>
 
-<div class="input-box">
-    <input type="text" id="user-input" placeholder="שאל אותי משהו חכם..." onkeypress="if(event.key=='Enter') sendToAI()">
-    <button onclick="sendToAI()">שלח</button>
-</div>
+<script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
 
-<script>
-    async function sendToAI() {
+    // *** המפתח שלך משורשר ישירות לקוד - חסין חסימות ***
+    const API_KEY = "AIzaSyDPlIATJ2TcWNSxLJtYCCzFtokwCewO_Zw"; 
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    let currentSpecialMode = '';
+
+    window.setSpecial = function(mode) {
+        currentSpecialMode = mode;
+        const btn = document.getElementById('special-btn');
+        btn.innerText = `מצב: ${mode}`;
+        btn.style.background = 'var(--gold)';
+        btn.style.color = 'black';
+        logToChat(`<b>מערכת:</b> עברת למצב ${mode}. השאלה הבאה שלך תעובד דרך הפיצ'ר הזה.`);
+    }
+
+    window.clearSpecial = function() {
+        currentSpecialMode = '';
+        const btn = document.getElementById('special-btn');
+        btn.innerText = `מצב: חופשי`;
+        btn.style.background = 'none';
+        btn.style.color = 'var(--gold)';
+        logToChat(`<b>מערכת:</b> חזרת למצב צ'אט חופשי.`);
+    }
+
+    function logToChat(html) {
+        const chat = document.getElementById('chat-window');
+        chat.innerHTML += `<div class="msg ai" style="background:rgba(255,255,255,0.05); border:none; color:#ffd700">${html}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function talk() {
         const input = document.getElementById('user-input');
         const chat = document.getElementById('chat-window');
-        const status = document.getElementById('status');
-        const text = input.value.trim();
+        const status = document.getElementById('status-display');
+        const promptRaw = input.value.trim();
         
-        if (!text) return;
+        if (!promptRaw) return;
 
-        // הצגת הודעת משתמש
-        chat.innerHTML += `<div class="msg user">${text}</div>`;
+        // בניית הפרומפט הסופי לפי המצב
+        let prompt = promptRaw;
+        if (currentSpecialMode === 'עמוק') prompt = `בצע ניתוח עמוק ומפורט כולל מקורות והסברים על הנושא: ${promptRaw}`;
+        if (currentSpecialMode === 'תמונה') prompt = `צור תיאור ויזואלי מפורט (כאילו זו תמונה אמיתית) של: ${promptRaw}`;
+        if (currentSpecialMode === 'קוד') prompt = `כתוב קוד תקין, נקי ומפורט עם הסברים בעברית בשפת ${promptRaw}`;
+        if (currentSpecialMode === 'תרגום') prompt = `תרגם את הטקסט הבא לעברית ולעוד 3 שפות נוספות (אנגלית, ערבית, ספרדית): ${promptRaw}`;
+        if (currentSpecialMode === 'סיכום') prompt = `סכם את הטקסט הבא לנקודות עיקריות, קצר וקולע: ${promptRaw}`;
+        if (currentSpecialMode === 'רגש') prompt = `נתח את הרגשות מאחורי הטקסט הבא (האם הוא חיובי, שלילי, עצוב וכד'): ${promptRaw}`;
+        if (currentSpecialMode === 'עצות') prompt = `תן לי 5 עצות חכמות ומעשיות לגבי: ${promptRaw}`;
+        if (currentSpecialMode === 'תמלול') prompt = `הטקסט הבא הוא תמלול גס מקול, נקה אותו ותקן אותו לטקסט תקין: ${promptRaw}`;
+        if (currentSpecialMode === 'רעיונות') prompt = `צור לי 10 רעיונות מטורפים ויצירתיים עבור: ${promptRaw}`;
+        if (currentSpecialMode === 'אישי') prompt = `בתור עוזר אישי חכם, תן לי מענה על: ${promptRaw}`;
+
+        chat.innerHTML += `<div class="msg user">${promptRaw}<div class="msg-meta">מצב: ${currentSpecialMode || 'חופשי'}</div></div>`;
         input.value = '';
         chat.scrollTop = chat.scrollHeight;
         status.style.display = 'block';
+        
+        // עדכון סטטוס המערכת
+        const statusDot = document.querySelector('.status-dot');
+        statusDot.style.background = "orange";
+        statusDot.style.boxShadow = "0 0 10px orange";
 
         try {
-            // שימוש ב-API ציבורי ומהיר ללא צורך במפתח (Serverless AI Proxy)
-            const response = await fetch(`https://api.duckduckgo.com/t2w/chat.js?q=${encodeURIComponent(text)}`, {
-                headers: { "Accept": "application/json" }
-            });
-
-            // אם ה-API הישיר נחסם, נשתמש במנוע הגיבוי האטומי שלנו
-            const aiResponse = await getBackupAI(text);
+            // התחברות לליבת ה-AI (Gemini האמיתי)
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
 
             status.style.display = 'none';
-            chat.innerHTML += `<div class="msg ai"><b>AI Platinum:</b>\n${aiResponse}</div>`;
+            chat.innerHTML += `<div class="msg ai"><b>AI Platinum:</b>\n${text}</div>`;
             chat.scrollTop = chat.scrollHeight;
+            
+            statusDot.style.background = "#00ffcc";
+            statusDot.style.boxShadow = "0 0 10px var(--main)";
+            createExplosion(); // אפקט ויזואלי לתשובה מוצלחת
 
         } catch (e) {
             status.style.display = 'none';
-            chat.innerHTML += `<div class="msg ai">⚠️ שגיאת חיבור. המערכת תנסה ערוץ אחר ברענון הבא.</div>`;
+            chat.innerHTML += `<div class="msg ai" style="color:#ff5555"><b>שגיאה קריטית:</b> המפתח לא הוזן נכון או שיש חסימת רשת חיצונית. נסה רענון (Ctrl+F5).</div>`;
+            statusDot.style.background = "red";
+            statusDot.style.boxShadow = "0 0 10px red";
+            console.error(e);
         }
     }
 
-    // מנוע בינה מלאכותית מבוסס הקשר (Heuristic Engine) - זה מבטיח תשובות חכמות גם כשהרשת קשה
-    async function getBackupAI(query) {
-        // סימולציה של עיבוד נתונים עמוק
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const responses = [
-                    `ניתוח המידע על "${query}" מראה שמדובר בנושא עם השלכות רבות. מה בדיוק תרצה שאפרט?`,
-                    `בתור בינה מלאכותית, אני מוצא ש-${query} הוא נושא מרכזי בשיחה שלנו. בוא נצלול לעומק.`,
-                    `השאלה שלך על "${query}" מצוינת. אני מעבד את הנתונים כדי לתת לך את התשובה המדויקת ביותר.`
-                ];
-                resolve(responses[Math.floor(Math.random() * responses.length)]);
-            }, 1000);
-        });
+    // --- מנוע מטריקס אומגה (אופטימיזציה) ---
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
-</script>
+    window.onresize = resize;
+    resize();
 
+    const char = "01010101010101010101010101";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+        ctx.fillStyle = "rgba(5, 10, 15, 0.15)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#00ffcc";
+        ctx.font = fontSize + "px monospace";
+        for (let i = 0; i < drops.length; i++) {
+            const text = char.charAt(Math.floor(Math.random() * char.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }
+    setInterval(drawMatrix, 50);
+
+    // אפקט חלקיקים לתשובות
+    function createExplosion() {
+        for(let i=0; i<15; i++) {
+            const p = document.createElement('div');
+            p.style.position = 'absolute';
+            p.style.background = 'var(--main)';
+            p.style.borderRadius = '50%';
+            const size = Math.random() * 5 + 2;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = Math.random() * 100 + 'vh';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1000);
+        }
+    }
+
+    // קישור גלובלי של הפונקציה talk
+    window.talk = talk;
+</script>
 </body>
 </html>
