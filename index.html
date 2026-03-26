@@ -3,241 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLATINUM OMEGA AI - הפיצוי המוחלט 💎</title>
+    <title>QUANTUM MEMORY: DYNAMIC GRID</title>
     <style>
-        :root { --main: #00ffcc; --bg: #050a0f; --panel: rgba(10, 25, 41, 0.95); --gold: #ffd700; --red: #ff4444; }
-        * { box-sizing: border-box; transition: 0.3s; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: white; font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; }
+        :root { --neon: #00f2ff; --pink: #ff007f; --bg: #050505; --gold: #ffd700; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        #canvas-bg { position: fixed; top: 0; left: 0; z-index: -1; }
         
-        /* רקע מטריקס אומגה דינמי */
-        #matrix-bg { position: fixed; top: 0; left: 0; z-index: -1; filter: blur(1px); opacity: 0.3; }
+        #timer-bar-container { width: 100%; height: 6px; background: #111; position: relative; display: none; overflow: hidden; }
+        #timer-bar { height: 100%; background: var(--neon); width: 100%; transition: width 0.1s linear; }
+        .panic { background: var(--pink) !important; box-shadow: 0 0 20px var(--pink); }
 
-        /* מבנה האתר - גריד מתקדם */
-        .wrapper { display: grid; grid-template-columns: 350px 1fr; grid-template-rows: 80px 1fr 60px; height: 100vh; gap: 15px; padding: 15px; }
-
-        /* כותרת מטורפת עם אפקטים */
-        header { grid-column: span 2; background: var(--panel); border: 2px solid var(--main); border-radius: 15px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; box-shadow: 0 0 30px rgba(0,255,204,0.4); z-index: 100; }
-        .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; color: var(--main); text-shadow: 0 0 15px var(--main); animation: glow 2s infinite alternate; }
-        @keyframes glow { from { opacity: 0.7; } to { opacity: 1; text-shadow: 0 0 25px var(--main); } }
-        #system-status { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #64748b; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: gray; box-shadow: 0 0 10px white; }
-
-        /* לוח בקרה צדי - צד ימין */
-        .sidebar { background: var(--panel); border: 1px solid #1e293b; border-radius: 15px; display: flex; flex-direction: column; padding: 20px; border-left: 5px solid var(--main); z-index: 50; }
-        .feature-title { font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 20px; color: var(--main); text-align: center; }
-        .feature-item { font-size: 1rem; color: #e2e8f0; cursor: pointer; padding: 10px; border-radius: 8px; }
-        .feature-item:hover { background: rgba(0,255,204,0.1); color: var(--main); transform: scale(1.05); }
-
-        /* מרכז - צ'אט AI אמיתי (VIP) */
-        main { background: var(--panel); border: 1px solid #1e293b; border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; position: relative; z-index: 50; }
-        #chat-window { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, #0a1929 0%, #050a0f 100%); }
-        .msg { padding: 15px 20px; border-radius: 15px; line-height: 1.6; font-size: 1.1rem; max-width: 80%; animation: slideUp 0.3s ease; position: relative; }
-        .msg.user { align-self: flex-start; background: #1e293b; border-right: 4px solid var(--gold); }
-        .msg.ai { align-self: flex-end; background: #202c33; border-left: 4px solid var(--main); color: #e9edef; white-space: pre-wrap; }
-        .msg-meta { font-size: 0.7rem; color: #64748b; margin-top: 5px; text-align: left; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } }
-
-        /* איזור קלט מתקדם */
-        .input-area { padding: 20px; background: rgba(17, 27, 33, 0.95); display: flex; gap: 15px; border-top: 1px solid #333; z-index: 100; }
-        input { flex-grow: 1; background: #000; border: 1px solid var(--main); color: white; padding: 15px; border-radius: 25px; outline: none; font-size: 1.1rem; box-shadow: inset 0 0 10px rgba(0,255,204,0.2); }
-        input:focus { box-shadow: 0 0 15px var(--main), inset 0 0 10px rgba(0,255,204,0.3); }
-        .btn-send { background: var(--main); border: none; color: black; padding: 10px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-        .btn-send:active { transform: scale(0.9); }
-        .btn-special { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 1.1rem; }
-        .btn-special:hover { background: var(--gold); color: black; }
-
-        /* סטטוס טעינה */
-        #status-display { color: var(--main); font-size: 0.8rem; padding: 5px 20px; display: none; }
-
-        /* תפריט תחתון */
-        footer { grid-column: span 2; background: var(--panel); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; letter-spacing: 1px; color: #64748b; border: 1px solid #1e293b; z-index: 100; }
-
-        @media (max-width: 800px) {
-            .wrapper { grid-template-columns: 1fr; grid-template-rows: 70px 300px 1fr 40px; }
-            .sidebar { grid-row: 3; }
+        #hud { padding: 10px 20px; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--neon); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .stat-value { font-size: 22px; font-weight: bold; color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+        .power-btn { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 6px 15px; border-radius: 8px; cursor: pointer; }
+        
+        #game-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 10px; overflow: hidden; position: relative; }
+        
+        /* המסגרת הדינמית שגדלה עם השלבים */
+        #grid-frame {
+            display: flex; justify-content: center; align-items: center;
+            border: 1px solid rgba(0, 242, 255, 0.1); border-radius: 15px;
+            transition: all 0.5s ease; padding: 10px; box-sizing: border-box;
         }
+
+        #grid { display: grid; gap: 8px; justify-content: center; align-items: center; }
+        
+        .card { perspective: 1000px; cursor: pointer; }
+        .card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+        .card.matched { animation: match-out 0.4s forwards; pointer-events: none; }
+        @keyframes match-out { 0% { transform: scale(1.1); } 100% { transform: scale(0); opacity: 0; } }
+        
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; border: 1px solid rgba(0, 242, 255, 0.3); }
+        .card-front { background: linear-gradient(135deg, #1a1a1a, #000); box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.1); }
+        .card-back { background: #222; transform: rotateY(180deg); border-color: var(--pink); display: flex; align-items: center; justify-content: center; }
+        
+        #win-overlay { position: absolute; inset: 0; display: none; justify-content: center; align-items: center; background: rgba(0,0,0,0.7); z-index: 50; pointer-events: none; }
+        .win-text { font-size: 80px; color: var(--neon); font-weight: bold; text-shadow: 0 0 30px var(--neon); animation: pulse 0.5s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.1); opacity: 1; } }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
+        input { padding: 8px; background: #000; color: var(--neon); border: 1px solid var(--neon); border-radius: 5px; text-align: center; }
+        button.main-btn { padding: 20px 60px; font-size: 28px; background: transparent; color: var(--neon); border: 3px solid var(--neon); border-radius: 60px; cursor: pointer; }
     </style>
 </head>
 <body>
+<canvas id="canvas-bg"></canvas>
+<div id="timer-bar-container"><div id="timer-bar"></div></div>
 
-<canvas id="matrix-bg"></canvas>
-
-<div class="wrapper">
-    <header>
-        <div class="logo">PLATINUM OMEGA</div>
-        <div id="system-status"><div class="status-dot"></div>ליבת ה-AI: מוכנה</div>
-    </header>
-
-    <aside class="sidebar">
-        <div class="feature-title">💎 10 פיצ'רים של בינה</div>
-        <div class="feature-item" onclick="setSpecial('עמוק')">🔍 ניתוח עמוק (Deep Analysis)</div>
-        <div class="feature-item" onclick="setSpecial('תמונה')">🎨 תמונה ויזואלית (Image Sim)</div>
-        <div class="feature-item" onclick="setSpecial('קוד')">💻 מחולל קוד (Code Gen)</div>
-        <div class="feature-item" onclick="setSpecial('תרגום')">🌐 תרגום סימולטני (Translate)</div>
-        <div class="feature-item" onclick="setSpecial('סיכום')">📝 סיכום חכם (Summarize)</div>
-        <div class="feature-item" onclick="setSpecial('רגש')">❤️ ניתוח רגשות (Sentiment)</div>
-        <div class="feature-item" onclick="setSpecial('עצות')">💡 מחולל עצות (Advice Gen)</div>
-        <div class="feature-item" onclick="setSpecial('תמלול')">🎤 תמלול קולי (Voice to Text)</div>
-        <div class="feature-item" onclick="setSpecial('רעיונות')">🧠 רעיונות מטורפים (Idea Bot)</div>
-        <div class="feature-item" onclick="setSpecial('אישי')">👤 עוזר אישי (Personal AI)</div>
-    </aside>
-
-    <main>
-        <div id="chat-window">
-            <div class="msg ai">ברוך הבא לפלטינום אומגה. אני מחובר למוח הרשמי של Gemini עכשיו. אני לא משתמש בתשובות מוכנות מראש. שאל אותי כל דבר!</div>
-        </div>
-        <div id="status-display">Gemini מעבד בקשה עמוקה...</div>
-        <div class="input-area">
-            <button class="btn-special" id="special-btn" onclick="clearSpecial()">מצב: חופשי</button>
-            <input type="text" id="user-input" placeholder="כתוב שאלה חכמה..." onkeypress="if(event.key=='Enter') talk()">
-            <button class="btn-send" onclick="talk()">שלח</button>
-        </div>
-    </main>
-
-    <footer>גירסת פיצוי אולטימטיבית | נבנה עבור פלטינום | 2026-INFINITE</footer>
+<div id="hud">
+    <div class="stat-box"><div>שלב</div><div id="lvl-val" class="stat-value">1</div></div>
+    <div id="powers">
+        <button class="power-btn" onclick="useHint()">💡 רמז (<span id="hint-count">3</span>)</button>
+        <button class="power-btn" onclick="useShuffle()">🌀 ערבוב (<span id="shuffle-count">3</span>)</button>
+    </div>
+    <div id="timer-display" style="display:none; text-align: center;"><div>זמן</div><div id="time-left" class="stat-value">0</div></div>
+    <div class="stat-box"><div>זוגות</div><div id="pairs-val" class="stat-value">0</div></div>
 </div>
 
-<script type="importmap">
-  { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
-</script>
+<div id="game-container">
+    <div id="win-overlay"><div class="win-text">SYSTEM UPDATED</div></div>
+    <div id="grid-frame">
+        <div id="grid"></div>
+    </div>
+</div>
 
-<script type="module">
-    import { GoogleGenerativeAI } from "@google/generative-ai";
+<div id="start-modal" class="modal">
+    <h1 style="color:var(--neon); font-size: 50px;">QUANTUM MEMORY</h1>
+    <div style="margin: 15px;">שלב קפיצה: <input type="number" id="lvl-input" value="1" min="1"></div>
+    <div style="margin: 15px;"><label><input type="checkbox" id="timer-toggle"> מצב טיימר (Hardcore)</label></div>
+    <button class="main-btn" onclick="bootGame()">התחל משחק 🚀</button>
+</div>
 
-    // *** המפתח שלך משורשר ישירות לקוד - חסין חסימות ***
-    const API_KEY =AIzaSyBnn9zalWv5c-qG4vyjm6_S5dCFKNDlJeA  
-
-    const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    let currentSpecialMode = '';
-
-    window.setSpecial = function(mode) {
-        currentSpecialMode = mode;
-        const btn = document.getElementById('special-btn');
-        btn.innerText = `מצב: ${mode}`;
-        btn.style.background = 'var(--gold)';
-        btn.style.color = 'black';
-        logToChat(`<b>מערכת:</b> עברת למצב ${mode}. השאלה הבאה שלך תעובד דרך הפיצ'ר הזה.`);
-    }
-
-    window.clearSpecial = function() {
-        currentSpecialMode = '';
-        const btn = document.getElementById('special-btn');
-        btn.innerText = `מצב: חופשי`;
-        btn.style.background = 'none';
-        btn.style.color = 'var(--gold)';
-        logToChat(`<b>מערכת:</b> חזרת למצב צ'אט חופשי.`);
-    }
-
-    function logToChat(html) {
-        const chat = document.getElementById('chat-window');
-        chat.innerHTML += `<div class="msg ai" style="background:rgba(255,255,255,0.05); border:none; color:#ffd700">${html}</div>`;
-        chat.scrollTop = chat.scrollHeight;
-    }
-
-    async function talk() {
-        const input = document.getElementById('user-input');
-        const chat = document.getElementById('chat-window');
-        const status = document.getElementById('status-display');
-        const promptRaw = input.value.trim();
-        
-        if (!promptRaw) return;
-
-        // בניית הפרומפט הסופי לפי המצב
-        let prompt = promptRaw;
-        if (currentSpecialMode === 'עמוק') prompt = `בצע ניתוח עמוק ומפורט כולל מקורות והסברים על הנושא: ${promptRaw}`;
-        if (currentSpecialMode === 'תמונה') prompt = `צור תיאור ויזואלי מפורט (כאילו זו תמונה אמיתית) של: ${promptRaw}`;
-        if (currentSpecialMode === 'קוד') prompt = `כתוב קוד תקין, נקי ומפורט עם הסברים בעברית בשפת ${promptRaw}`;
-        if (currentSpecialMode === 'תרגום') prompt = `תרגם את הטקסט הבא לעברית ולעוד 3 שפות נוספות (אנגלית, ערבית, ספרדית): ${promptRaw}`;
-        if (currentSpecialMode === 'סיכום') prompt = `סכם את הטקסט הבא לנקודות עיקריות, קצר וקולע: ${promptRaw}`;
-        if (currentSpecialMode === 'רגש') prompt = `נתח את הרגשות מאחורי הטקסט הבא (האם הוא חיובי, שלילי, עצוב וכד'): ${promptRaw}`;
-        if (currentSpecialMode === 'עצות') prompt = `תן לי 5 עצות חכמות ומעשיות לגבי: ${promptRaw}`;
-        if (currentSpecialMode === 'תמלול') prompt = `הטקסט הבא הוא תמלול גס מקול, נקה אותו ותקן אותו לטקסט תקין: ${promptRaw}`;
-        if (currentSpecialMode === 'רעיונות') prompt = `צור לי 10 רעיונות מטורפים ויצירתיים עבור: ${promptRaw}`;
-        if (currentSpecialMode === 'אישי') prompt = `בתור עוזר אישי חכם, תן לי מענה על: ${promptRaw}`;
-
-        chat.innerHTML += `<div class="msg user">${promptRaw}<div class="msg-meta">מצב: ${currentSpecialMode || 'חופשי'}</div></div>`;
-        input.value = '';
-        chat.scrollTop = chat.scrollHeight;
-        status.style.display = 'block';
-        
-        // עדכון סטטוס המערכת
-        const statusDot = document.querySelector('.status-dot');
-        statusDot.style.background = "orange";
-        statusDot.style.boxShadow = "0 0 10px orange";
-
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(f, t, d, v=0.1) {
         try {
-            // התחברות לליבת ה-AI (Gemini האמיתי)
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d);
+        } catch(e) {}
+    }
 
-            status.style.display = 'none';
-            chat.innerHTML += `<div class="msg ai"><b>AI Platinum:</b>\n${text}</div>`;
-            chat.scrollTop = chat.scrollHeight;
-            
-            statusDot.style.background = "#00ffcc";
-            statusDot.style.boxShadow = "0 0 10px var(--main)";
-            createExplosion(); // אפקט ויזואלי לתשובה מוצלחת
+    const grid = document.getElementById('grid'), canvas = document.getElementById('canvas-bg'), ctx = canvas.getContext('2d');
+    const gridFrame = document.getElementById('grid-frame');
+    let currentLevel = 1, totalPairs = 0, matchesFound = 0, flippedCards = [], isLock = false, hintsLeft = 3, shufflesLeft = 3;
+    let timerActive = false, timeLeft = 0, timerInterval = null, initialTime = 60, particles = [];
 
-        } catch (e) {
-            status.style.display = 'none';
-            chat.innerHTML += `<div class="msg ai" style="color:#ff5555"><b>שגיאה קריטית:</b> המפתח לא הוזן נכון או שיש חסימת רשת חיצונית. נסה רענון (Ctrl+F5).</div>`;
-            statusDot.style.background = "red";
-            statusDot.style.boxShadow = "0 0 10px red";
-            console.error(e);
+    const emojiPool = ["🚀","🛸","👾","🤖","💎","🔥","⚡","🌀","🌈","👻","🎃","🦄","🦁","🐯","🦊","🐱","🐺","🐨","🐲","🌍","☀️","🌙","🍎","🍕","🍔","🍟","⚽","🏀","🎮","🎸","🎹","🎺","🎻","💰","🔑","🎁","🎈","🧿","🔭","🧪","🧬","🔋","🪐","🌑","🏹","🔮","🧱","⛓️","🛡️","⚔️","👑","💍","🎨","🎬","🎤","🎧","📻","📱","💻","🕯️","🛠️","⛏️","⚙️","🔫","🧨","💣","🧸","🪄","🔔","📡","⌛","🕰️","⛱️","🌋","🏜️","🏔️","🏘️","🏰","🎢","🚂","🚁","🛶","⚓","⛽","🚧","🚥","🚢","🛹","🚜","🚲","🛵"];
+
+    function bootGame() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        currentLevel = parseInt(document.getElementById('lvl-input').value);
+        timerActive = document.getElementById('timer-toggle').checked;
+        document.getElementById('start-modal').style.display = 'none';
+        if(timerActive) { 
+            document.getElementById('timer-bar-container').style.display = 'block'; 
+            document.getElementById('timer-display').style.display = 'block'; 
+        }
+        setInterval(() => { if(!isLock) playSound(110, 'sine', 2, 0.02); }, 2000);
+        initLevel();
+    }
+
+    function initLevel() {
+        grid.innerHTML = ''; flippedCards = []; matchesFound = 0; isLock = false;
+        document.getElementById('win-overlay').style.display = 'none';
+        clearInterval(timerInterval);
+        
+        let baseCards = 8 + (currentLevel * 4);
+        let cols = Math.ceil(Math.sqrt(baseCards));
+        let rows = Math.ceil(baseCards / cols);
+        if ((cols * rows) % 2 !== 0) cols++; 
+        
+        let numCards = cols * rows;
+        totalPairs = numCards / 2;
+
+        let levelEmojis = [];
+        let tempPool = [...emojiPool].sort(() => Math.random() - 0.5);
+        for(let i=0; i<totalPairs; i++) levelEmojis.push(tempPool[i % tempPool.length]);
+        
+        let deck = [...levelEmojis, ...levelEmojis].sort(() => Math.random() - 0.5);
+        deck.forEach(s => createCard(s));
+
+        if(timerActive) { initialTime = Math.max(10, 60 - (currentLevel * 2)); startTimer(); }
+        updateUI(); calculateGrid(cols, rows);
+    }
+
+    function calculateGrid(cols, rows) {
+        // גודל המסגרת גדל עם השלבים (מ-40% ועד 98%)
+        let growthFactor = Math.min(0.98, 0.4 + (currentLevel * 0.02));
+        
+        const maxW = window.innerWidth * growthFactor;
+        const maxH = (window.innerHeight - 120) * growthFactor;
+        
+        gridFrame.style.width = maxW + "px";
+        gridFrame.style.height = maxH + "px";
+
+        let size = Math.min((maxW / cols) - 10, (maxH / rows / 1.3) - 10);
+        
+        // הגנה - שהקלפים לא יהיו קטנים מדי בטעות
+        if(size < 30) size = 30; 
+
+        grid.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
+        Array.from(grid.children).forEach(c => {
+            c.style.width = size + 'px'; c.style.height = (size * 1.3) + 'px';
+            const back = c.querySelector('.card-back');
+            if(back) back.style.fontSize = (size * 0.6) + 'px';
+        });
+    }
+
+    function createCard(s) {
+        const c = document.createElement('div');
+        c.className = 'card'; c.dataset.val = s;
+        c.innerHTML = `<div class="card-inner"><div class="card-face card-front"></div><div class="card-face card-back">${s}</div></div>`;
+        c.onclick = () => { playSound(600, 'sine', 0.1); handleFlip(c); };
+        grid.appendChild(c);
+    }
+
+    function handleFlip(c) {
+        if (isLock || c.classList.contains('flipped') || c.classList.contains('matched')) return;
+        c.classList.add('flipped'); flippedCards.push(c);
+        if (flippedCards.length === 2) { isLock = true; checkMatch(); }
+    }
+
+    function checkMatch() {
+        const [c1, c2] = flippedCards;
+        if (c1.dataset.val === c2.dataset.val) {
+            matchesFound++; playSound(440, 'triangle', 0.5); spawnFX(c1);
+            setTimeout(() => {
+                c1.classList.add('matched'); c2.classList.add('matched');
+                flippedCards = []; isLock = false; updateUI();
+                if (matchesFound === totalPairs) { 
+                    clearInterval(timerInterval);
+                    document.getElementById('win-overlay').style.display = 'flex';
+                    playSound(880, 'sine', 0.8, 0.2);
+                    setTimeout(() => { currentLevel++; initLevel(); }, 1200); 
+                }
+            }, 400);
+        } else {
+            playSound(150, 'sawtooth', 0.3, 0.2);
+            setTimeout(() => { c1.classList.remove('flipped'); c2.classList.remove('flipped'); flippedCards = []; isLock = false; }, 1000);
         }
     }
 
-    // --- מנוע מטריקס אומגה (אופטימיזציה) ---
-    const canvas = document.getElementById('matrix-bg');
-    const ctx = canvas.getContext('2d');
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    window.onresize = resize;
-    resize();
-
-    const char = "01010101010101010101010101";
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function drawMatrix() {
-        ctx.fillStyle = "rgba(5, 10, 15, 0.15)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#00ffcc";
-        ctx.font = fontSize + "px monospace";
-        for (let i = 0; i < drops.length; i++) {
-            const text = char.charAt(Math.floor(Math.random() * char.length));
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    setInterval(drawMatrix, 50);
-
-    // אפקט חלקיקים לתשובות
-    function createExplosion() {
-        for(let i=0; i<15; i++) {
-            const p = document.createElement('div');
-            p.style.position = 'absolute';
-            p.style.background = 'var(--main)';
-            p.style.borderRadius = '50%';
-            const size = Math.random() * 5 + 2;
-            p.style.width = size + 'px';
-            p.style.height = size + 'px';
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.top = Math.random() * 100 + 'vh';
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 1000);
-        }
+    function startTimer() {
+        timeLeft = initialTime;
+        timerInterval = setInterval(() => {
+            timeLeft -= 0.1;
+            const bar = document.getElementById('timer-bar');
+            bar.style.width = (timeLeft / initialTime * 100) + "%";
+            if(timeLeft < 10) bar.classList.add('panic');
+            document.getElementById('time-left').innerText = Math.ceil(timeLeft);
+            if(timeLeft <= 0) { clearInterval(timerInterval); alert("GAME OVER"); location.reload(); }
+        }, 100);
     }
 
-    // קישור גלובלי של הפונקציה talk
-    window.talk = talk;
+    function updateUI() {
+        document.getElementById('lvl-val').innerText = currentLevel;
+        document.getElementById('pairs-val').innerText = totalPairs - matchesFound;
+        document.getElementById('hint-count').innerText = hintsLeft;
+        document.getElementById('shuffle-count').innerText = shufflesLeft;
+    }
+
+    function useHint() {
+        if (hintsLeft <= 0 || isLock) return;
+        hintsLeft--; isLock = true; updateUI();
+        const u = Array.from(document.querySelectorAll('.card:not(.matched):not(.flipped)'));
+        const c1 = u[0], c2 = u.find(c => c.dataset.val === c1.dataset.val && c !== c1);
+        c1.classList.add('flipped'); if(c2) c2.classList.add('flipped');
+        setTimeout(() => { c1.classList.remove('flipped'); if(c2) c2.classList.remove('flipped'); isLock = false; }, 1200);
+    }
+
+    function useShuffle() {
+        if (shufflesLeft <= 0 || isLock) return;
+        shufflesLeft--; updateUI();
+        const a = Array.from(document.querySelectorAll('.card:not(.matched)'));
+        const v = a.map(c => c.dataset.val).sort(() => Math.random() - 0.5);
+        a.forEach((c, i) => { c.dataset.val = v[i]; c.querySelector('.card-back').innerText = v[i]; });
+    }
+
+    function spawnFX(el) {
+        const r = el.getBoundingClientRect();
+        for(let i=0; i<15; i++) particles.push({ x: r.left + r.width/2, y: r.top + r.height/2, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, a: 1 });
+    }
+
+    function render() {
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        ctx.fillStyle = 'rgba(5,5,5,0.3)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        particles.forEach((p, i) => {
+            p.x += p.vx; p.y += p.vy; p.a -= 0.02; ctx.globalAlpha = p.a; ctx.fillStyle = '#00f2ff';
+            ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+            if(p.a <= 0) particles.splice(i,1);
+        });
+        requestAnimationFrame(render);
+    }
+    render();
+    window.addEventListener('resize', () => {
+        let cols = Math.ceil(Math.sqrt(grid.children.length));
+        let rows = Math.ceil(grid.children.length / cols);
+        calculateGrid(cols, rows);
+    });
 </script>
 </body>
 </html>
